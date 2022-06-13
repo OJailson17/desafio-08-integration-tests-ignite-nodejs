@@ -79,23 +79,16 @@ describe("Get Statement", () => {
     );
   });
 
-  // it("should not be able to make a statement if statement id does not exist", async () => {
-  //   const responseAuth = await request(app).post("/api/v1/sessions").send({
-  //     email: "admin@rentalx.com",
-  //     password: "admin",
-  //   });
-
-  //   const { token } = responseAuth.body;
-
-  //   await expect(
-  //     request(app).get(`/api/v1/statements/${uuidV4()}`).set({
-  //       Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiOGRiYmZhN2MtMjJhZS00YmY2LWIxY2UtYmMwNGQ3OTU2ZTI1IiwibmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkByZW50YWx4LmNvbSIsInBhc3N3b3JkIjoiJDJhJDA4JGZZMkcvd1NYNENVUWZzeG1PLmdkUGVTemdpbHN2MGY2OGVRQTVJM053bWFVRU1GdUw1c3ZpIiwiY3JlYXRlZF9hdCI6IjIwMjItMDYtMDVUMDM6MjE6NDMuMTM4WiIsInVwZGF0ZWRfYXQiOiIyMDIyLTA2LTA1VDAzOjIxOjQzLjEzOFoifSwiaWF0IjoxNjU0Mzk5MzAzLCJleHAiOjE2NTQ0ODU3MDMsInN1YiI6IjhkYmJmYTdjLTIyYWUtNGJmNi1iMWNlLWJjMDRkNzk1NmUyNSJ9.HnJiMtl1R5oiPkfydP76NCkBGKQW0485kVz-BPErzd8`,
-  //     })
-  //   ).resolves.toHaveProperty(
-  //     "text",
-  //     new GetStatementOperationError.StatementNotFound().statusCode
-  //   );
-  // });
+  it("should not be able to make a statement if user id does not exist", async () => {
+    await expect(
+      request(app).get(`/api/v1/statements/${uuidV4()}`).set({
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiOGRiYmZhN2MtMjJhZS00YmY2LWIxY2UtYmMwNGQ3OTU2ZTI1IiwibmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkByZW50YWx4LmNvbSIsInBhc3N3b3JkIjoiJDJhJDA4JGZZMkcvd1NYNENVUWZzeG1PLmdkUGVTemdpbHN2MGY2OGVRQTVJM053bWFVRU1GdUw1c3ZpIiwiY3JlYXRlZF9hdCI6IjIwMjItMDYtMDVUMDM6MjE6NDMuMTM4WiIsInVwZGF0ZWRfYXQiOiIyMDIyLTA2LTA1VDAzOjIxOjQzLjEzOFoifSwiaWF0IjoxNjU0Mzk5MzAzLCJleHAiOjE2NTQ0ODU3MDMsInN1YiI6IjhkYmJmYTdjLTIyYWUtNGJmNi1iMWNlLWJjMDRkNzk1NmUyNSJ9.HnJiMtl1R5oiPkfydP76NCkBGKQW0485kVz-BPErzd8`,
+      })
+    ).resolves.toHaveProperty(
+      "status",
+      new GetStatementOperationError.UserNotFound().statusCode
+    );
+  });
 
   it("should not be able to make a statement token is missing", async () => {
     const responseAuth = await request(app).post("/api/v1/sessions").send({
