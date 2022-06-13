@@ -3,6 +3,7 @@ import request from "supertest";
 import { v4 as uuidV4 } from "uuid";
 import { app } from "../../../../app";
 import { hash } from "bcryptjs";
+import { IncorrectEmailOrPasswordError } from "./IncorrectEmailOrPasswordError";
 
 let connection: Connection;
 describe("Authenticate User", () => {
@@ -26,14 +27,6 @@ describe("Authenticate User", () => {
   });
 
   it("should be able to authenticate a user", async () => {
-    const user = {
-      name: "Ruby Morton",
-      email: "jucba@put.ad",
-      password: "test123",
-    };
-
-    // await request(app).post("/api/v1/users").send(user);
-
     const response = await request(app).post("/api/v1/sessions").send({
       email: "admin@rentalx.com",
       password: "admin",
@@ -41,5 +34,29 @@ describe("Authenticate User", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("token");
+  });
+
+  it("should not be able to authenticate a user if email is incorrect", async () => {
+    await expect(
+      request(app).post("/api/v1/sessions").send({
+        email: "admin@rental.com",
+        password: "admin",
+      })
+    ).resolves.toHaveProperty(
+      "status",
+      new IncorrectEmailOrPasswordError().statusCode
+    );
+  });
+
+  it("should not be able to authenticate a user if password is incorrect", async () => {
+    await expect(
+      request(app).post("/api/v1/sessions").send({
+        email: "admin@rentalx.com",
+        password: "admin123",
+      })
+    ).resolves.toHaveProperty(
+      "status",
+      new IncorrectEmailOrPasswordError().statusCode
+    );
   });
 });
